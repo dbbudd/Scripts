@@ -2,7 +2,7 @@ import Cocoa
 
 extension Array where Element: FloatingPoint {
     
-    func len() -> Element{
+    func len() -> Element {
         return Element(self.count)
     }
     
@@ -10,7 +10,7 @@ extension Array where Element: FloatingPoint {
         return self.reduce(0, +)
     }
     
-    func range() -> Element{
+    func range() -> Element {
         return self.max()! - self.min()!
     }
 
@@ -18,7 +18,7 @@ extension Array where Element: FloatingPoint {
         return self.sum() / Element(self.count)
     }
     
-    func median() -> Element{
+    func median() -> Element {
         if self.count % 2 == 0{
             let median1 = self.sorted()[self.count / 2]
             let median2 = self.sorted()[(self.count / 2) - 1]
@@ -27,30 +27,22 @@ extension Array where Element: FloatingPoint {
             return self.sorted()[self.count / 2]
         }
     }
-    
-    
-}
 
+    func std() -> Element {
+        //Step 1
+        let mean = self.mean()
 
-func std(values: [Float]) -> Float{
-    //Step 1
-    let mean = values.mean()
-    
-    //Step 2
-    let squaredAvgDiff = values.map{pow($0 - mean, 2.0)}
-    
-    //Step 3
-    let sumOfSquaredAvgDiff = squaredAvgDiff.sum()
-    
-    //Step 4 - Square root and we are done
-    let sd = sqrt(sumOfSquaredAvgDiff / values.len())
-    
-    return sd
+        // Step 2 use reduce to add them together
+        let totalAverage = self.reduce(0, { $0 + ($1-mean)*($1-mean) })
+        
+        // Step 3 square root
+        return sqrt(totalAverage / (Element(self.count) - 1))
+    }
 }
 
 
 //NEED TO INTEGRATE AS EXTENSION
-func correlation(x: [Float], y: [Float]) -> Float{
+func correlation(x: [Float], y: [Float]) -> Float {
     //https://www.statisticshowto.com/probability-and-statistics/correlation-coefficient-formula/#hand
     
     //STEP 1 - SUM x and y
@@ -111,7 +103,7 @@ print("Standard Deviation: \(values.std())")
 print("Coefficient of Variance: \(values.cv())")
 */
 
-let sd = std(values: studentH)
+let sd = studentH.std()
 print("Standard Deviation: \(sd)")
 
 let corr = correlation(x: ageX, y: glugoseY)
